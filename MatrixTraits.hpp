@@ -13,8 +13,11 @@ concept Scalar = std::is_floating_point<std::decay_t<T>>::value;
 // I need also a struct which does the normal comparison between the array indexes
 // if the matrix is Column-ordered
 struct CompareByColumns{
-    bool compare(const std::array<std::size_t,2>& a , const std::array<std::size_t,2>& b ) const {
-        return std::tie(a[1],a[0])<std::tie(b[1],b[0]);
+    bool operator()(const std::array<std::size_t,2>& a , const std::array<std::size_t,2>& b ) const {
+        if(a[1]>b[1]) return false;
+        if(a[1]<b[1]) return true;
+        // if the columns are equal, then I provide the orientation seeing the rows
+        return a[0]<b[0];
     }
 };
 
