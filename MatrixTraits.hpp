@@ -11,10 +11,10 @@ concept Scalar = std::is_floating_point<std::decay_t<T>>::value;
 // we use decay_t in order to dereference (e.g. in case T=double&)
 
 // we need the operator= between two variables of type T
-/*template<class T1, class T2>
+template<class T1, class T2>
 concept Assignable = requires (T1 a, T2 b) {
-    {a=b}->std::same_as<T1>;
-};*/
+    {a=b}->std::convertible_to<T1>;
+};
 
 // I need also a struct which does the normal comparison between the array indexes
 // if the matrix is Column-ordered
@@ -36,5 +36,6 @@ concept Complex = requires (T x){
 
 // We consider the concept which admits both Scalar or Complex
 template<class T>
-concept ValueType = Scalar<T> || Complex<T>;
+concept ValueType = (Scalar<T> || Complex<T>) && Assignable<T,T>;
+
 #endif //MATRIX_TRAITS_HPP_
