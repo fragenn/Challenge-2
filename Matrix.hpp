@@ -14,7 +14,7 @@ enum class ORDER{
     COL_ORDER,
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 class Matrix{
     using MatrixUncompressedRow = std::map<std::array<std::size_t,2>,T>;
     using MatrixUncompressedCol = std::map<std::array<std::size_t,2>,T,CompareByColumns>;

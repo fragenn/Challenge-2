@@ -4,7 +4,7 @@
 #include "Matrix.hpp"
 #include "MatrixTraits.hpp"
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::mat_resize(unsigned int rows,unsigned int cols){
     if(is_compressed()){
         //we need the UNCOMPRESSED VERSION so we need to uncompress it
@@ -42,7 +42,7 @@ void Matrix<T,StorageOrder>::mat_resize(unsigned int rows,unsigned int cols){
 
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
     // if UNCOMPRESSED add new element
     if(!is_compressed()){
@@ -130,7 +130,7 @@ T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
     } 
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
     // create a default value (NULL) to return if you haven't got the element
     static T def_val;
@@ -138,7 +138,8 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
     if(!is_compressed()){
         if(StorageOrder==ORDER::ROW_ORDER){
             if(i<m_rows && j<m_cols){
-                auto it = m_data_r.find({i,j});
+                std::array<std::size_t,2> v={i,j};
+                auto it = m_data_r.find(v);
                 if(it!=m_data_r.end()){
                     return it->second;
                 }
@@ -155,7 +156,8 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
         if(StorageOrder==ORDER::COL_ORDER){
             // CHECK COL ORDERING
             if(i<m_rows && j<m_cols){
-                auto it = m_data_c.find({i,j});
+                std::array<std::size_t,2> v={i,j};
+                auto it = m_data_c.find(v);
                 if(it!=m_data_c.end()){
                     return it->second;
                 }
@@ -227,7 +229,7 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
     } 
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::compress(){
     // if it's already compressed, return
     if(is_compressed()){
@@ -268,7 +270,6 @@ void Matrix<T,StorageOrder>::compress(){
             // cross the whole map
             for(auto it=m_data_c.begin();it!=m_data_c.end() && it->first[1]==j;it++){
                 cont_nnz++;
-                std::cout<<"CIAO"<<std::endl;
                 rows_indexes.push_back(it->first[0]);
                 m_data_stat.push_back(it->second);
             }
@@ -279,7 +280,7 @@ void Matrix<T,StorageOrder>::compress(){
     }
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::uncompress(){
     if(!is_compressed()){
         return;
@@ -312,7 +313,7 @@ void Matrix<T,StorageOrder>::uncompress(){
     m_data_stat.clear();
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
     // we take the file as a list of rows so we need to read row by row
     std::ifstream input(name);
@@ -338,13 +339,22 @@ void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
         std::size_t i,j;
         T value;
         curr_line >> i >> j >> value;
-        (*this)(i-1,j-1)=value;
+        (*this)(i-1,j-1)=static_cast<double>(value);
+        std::cout<<(*this)(i-1,j-1)<<std::endl;
         std::getline(input,line);
         cont++;
+        std::array<std::size_t,2> v={i-1,j-1};
+        /*if(StorageOrder==ORDER::ROW_ORDER){
+            std::cout<<m_data_r[v]<<std::endl;
+        }
+        if(StorageOrder==ORDER::COL_ORDER){
+            std::cout<<m_data_c[v]<<std::endl;
+        }
+        */
     }
 };
 
-template<Scalar T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::clear(){
     if(is_compressed()){
         rows_indexes.clear();

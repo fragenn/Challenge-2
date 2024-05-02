@@ -10,6 +10,12 @@ template<class T>
 concept Scalar = std::is_floating_point<std::decay_t<T>>::value;
 // we use decay_t in order to dereference (e.g. in case T=double&)
 
+// we need the operator= between two variables of type T
+/*template<class T1, class T2>
+concept Assignable = requires (T1 a, T2 b) {
+    {a=b}->std::same_as<T1>;
+};*/
+
 // I need also a struct which does the normal comparison between the array indexes
 // if the matrix is Column-ordered
 struct CompareByColumns{

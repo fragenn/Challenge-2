@@ -8,10 +8,14 @@ int main(int argc,char* argv[]){
     // Read and memorize the matrix by row
     Matrix<double,ORDER::ROW_ORDER> A_r(1,1);
     A_r.readMarketFormat("lnsp_131.mtx");
+    double val_r=A_r(11,11);
+    std::cout<<val_r<<std::endl;
 
     // Read and memorize the matrix by column
     Matrix<double,ORDER::COL_ORDER> A_c;
     A_c.readMarketFormat("lnsp_131.mtx");
+    double val_c=A_c(11,11);
+    std::cout<<val_c<<std::endl;
 
     // Create the vector of right dimension
     std::vector<double> v(131,1.0);
