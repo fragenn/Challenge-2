@@ -339,11 +339,17 @@ void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
         std::size_t i,j;
         T value;
         curr_line >> i >> j >> value;
-        (*this)(i-1,j-1)=static_cast<double>(value);
-        std::cout<<(*this)(i-1,j-1)<<std::endl;
+        //(*this)(i-1,j-1)=value;
+        //std::cout<<(*this)(i-1,j-1)<<std::endl;
+        std::array<std::size_t,2> v={i-1,j-1};
+        if(StorageOrder==ORDER::ROW_ORDER){
+            m_data_r[v]=value;
+        }
+        if(StorageOrder==ORDER::COL_ORDER){
+            m_data_c[v]=value;
+        }
         std::getline(input,line);
         cont++;
-        std::array<std::size_t,2> v={i-1,j-1};
         /*if(StorageOrder==ORDER::ROW_ORDER){
             std::cout<<m_data_r[v]<<std::endl;
         }
@@ -354,7 +360,7 @@ void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
     }
 };
 
-template<ValueType T,ORDER StorageOrder>
+template<typename T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::clear(){
     if(is_compressed()){
         rows_indexes.clear();
