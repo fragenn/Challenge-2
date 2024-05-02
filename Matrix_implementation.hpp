@@ -48,46 +48,33 @@ T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
     if(!is_compressed()){
         if(StorageOrder==ORDER::ROW_ORDER){
             if(i<m_rows && j<m_cols){
-                auto it = m_data_r.find({i,j});
-                if(it!=m_data_r.end()){
+                std::array<std::size_t,2> v={i,j};
+                auto it=m_data_r.find(v);
+                if(it==m_data_r.end()){
+                    // CREATE THE NEW ELEMENT
+                    T def_val;
+                    m_data_r[v]=def_val;
                     return it->second;
                 }
-                else{
-                    //here you need to create the element in the map with a default value of type Scalar S
-                    T value;
-                    std::array<std::size_t,2> v={i,j};
-                    std::pair<std::array<std::size_t,2>,T> pair(v,value);
-                    m_data_r.insert(pair);
-                    return value;
-                }
+                return it->second;
             }
-            else{                
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
-            }
+            // INDEXES ARE OUT OF BOUNDS SO IN THE NON-CONST VERSION YOU EXIT THE PROGRAM WITHOUT RETURNING ANYTHING
+            throw std::runtime_error("Indexes out of bounds");
         }
         if(StorageOrder==ORDER::COL_ORDER){
             // CHECK COL ORDERING
             if(i<m_rows && j<m_cols){
-                auto it = m_data_c.find({i,j});
-                if(it!=m_data_c.end()){
+                std::array<std::size_t,2> v={i,j};
+                auto it=m_data_c.find(v);
+                if(it==m_data_c.end()){
+                    // CREATE THE NEW ELEMENT
+                    T def_val;
+                    m_data_c[v]=def_val;
                     return it->second;
                 }
-                else{
-                    //here you need to create the element in the map with a default value of type Scalar S
-                    T value;
-                    std::array<std::size_t,2> v={i,j};
-                    std::pair<std::array<std::size_t,2>,T> pair(v,value);
-                    m_data_r.insert(pair);
-                    return value;
-                }
+                return it->second;
             }
-            else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
-            }
+            throw std::runtime_error("Indexes out of bounds");
         }
     }
     // if COMPRESSED add only if there exists ALREADY an element in the position i,j DIFFERENT FROM ZERO
@@ -103,20 +90,17 @@ T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
                             return m_data_stat[k];
                         }
                     }
-                    std::cerr<<"Element non zero non present"<<std::endl;
-                    T def_val;
-                    return def_val;
+                    // ELEMENT NNZ IS NOT PRESENT
+                    throw std::runtime_error("Element non zero non present");
                 }
                 else{
-                    std::cerr<<"Element non zero non present"<<std::endl;
-                    T def_val;
-                    return def_val;
+                    // ELEMENT NNZ IS NOT PRESENT
+                    throw std::runtime_error("Element non zero non present");
                 }
             }
             else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
+                // OUT OF BOUNDS
+                throw std::runtime_error("Indexes out of bounds");
             }
         }
         if(StorageOrder==ORDER::COL_ORDER){
@@ -130,20 +114,17 @@ T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
                             return m_data_stat[k];
                         }
                     }
-                    std::cerr<<"Element non zero non present"<<std::endl;
-                    T def_val;
-                    return def_val;
+                    // ELEMENT NNZ IS NOT PRESENT
+                    throw std::runtime_error("Element non zero non present");
                 }
                 else{
-                    std::cerr<<"Element non zero non present"<<std::endl;
-                    T def_val;
-                    return def_val;
+                    // ELEMENT NNZ IS NOT PRESENT
+                    throw std::runtime_error("Element non zero non present");
                 }
             }
             else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
+                // OUT OF BOUNDS
+                throw std::runtime_error("Indexes out of bounds");
             }
         }
     } 
@@ -151,6 +132,8 @@ T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
 
 template<Scalar T,ORDER StorageOrder>
 T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
+    // create a default value (NULL) to return if you haven't got the element
+    static T def_val;
     // if UNCOMPRESSED add new element
     if(!is_compressed()){
         if(StorageOrder==ORDER::ROW_ORDER){
@@ -160,14 +143,13 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
                     return it->second;
                 }
                 else{
-                    //here you need to create the element in the map with a default value of type Scalar S
-                    return 0.0;
+                    // HERE YOU NEED TO RETURN 0
+                    return def_val;
                 }
             }
             else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
+                // OUT OF BOUNDS
+                throw std::runtime_error("Indexes out of bounds");
             }
         }
         if(StorageOrder==ORDER::COL_ORDER){
@@ -178,14 +160,13 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
                     return it->second;
                 }
                 else{
-                    //here you need to create the element in the map with a default value of type Scalar S
-                    return 0.0;
+                    // HERE YOU NEED TO RETURN 0
+                    return def_val;
                 }
             }
             else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
+                // OUT OF BOUNDS
+                throw std::runtime_error("Indexes out of bounds");
             }
         }
     }
@@ -206,16 +187,15 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
                             return m_data_stat[k];
                         }
                     }
-                    return 0.0;
+                    return def_val;
                 }
                 else{
-                    return 0.0;
+                    return def_val;
                 }
             }
             else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
+                // OUT OF BOUNDS
+                throw std::runtime_error("Indexes out of bounds");
             }
         }
         if(StorageOrder==ORDER::COL_ORDER){
@@ -233,16 +213,15 @@ T Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j) const{
                             return m_data_stat[k];
                         }
                     }
-                    return 0.0;
+                    return def_val;
                 }
                 else{
-                    return 0.0;
+                    return def_val;
                 }
             }
             else{
-                std::cerr<<"Out of bounds"<<std::endl;
-                T def_val;
-                return def_val;
+                // OUT OF BOUNDS
+                throw std::runtime_error("Indexes out of bounds");
             }
         }
     } 
@@ -259,43 +238,44 @@ void Matrix<T,StorageOrder>::compress(){
     flag=true;
     if(StorageOrder==ORDER::ROW_ORDER){
         // ROW ORDERING
+        // at first resize the vector of rows indexes
+        rows_indexes.resize(m_rows+1);
         // you need to count the nnz elements for each row
         int cont_nnz=0;
-        rows_indexes[0]=0;
+        rows_indexes.push_back(0);
         // for all the row indexes
         for(std::size_t i=0;i<m_rows;i++){
             // cross the whole map
             for(auto it=m_data_r.begin();it!=m_data_r.end() && it->first[0]==i;it++){
                 cont_nnz++;
-                cols_indexes[cont_nnz]=it->first[1];
-                m_data_stat[cont_nnz]=it->second;
+                cols_indexes.push_back(it->first[1]);
+                m_data_stat.push_back(it->second);
             }
-            rows_indexes[i+1]=cont_nnz;
+            rows_indexes.push_back(cont_nnz);
         } 
         // now empty the map
-        for(auto it=m_data_r.begin();it!=m_data_r.end();it++){
-            m_data_r.erase(it);
-        }
+        m_data_r.clear();
     }
     if(StorageOrder==ORDER::COL_ORDER){
         // COL ORDERING
+        // at first resize the vector of columns indexes
+        cols_indexes.resize(m_cols+1);
         // you need to count the nnz elements for each column
         int cont_nnz=0;
-        cols_indexes[0]=0;
+        cols_indexes.push_back(0);
         // for all the col indexes
         for(std::size_t j=0;j<m_cols;j++){
             // cross the whole map
             for(auto it=m_data_c.begin();it!=m_data_c.end() && it->first[1]==j;it++){
                 cont_nnz++;
-                rows_indexes[cont_nnz]=it->first[0];
-                m_data_stat[cont_nnz]=it->second;
+                std::cout<<"CIAO"<<std::endl;
+                rows_indexes.push_back(it->first[0]);
+                m_data_stat.push_back(it->second);
             }
-            cols_indexes[j+1]=cont_nnz;
+            cols_indexes.push_back(cont_nnz);
         }
         // now empty the map
-        for(auto it=m_data_c.begin();it!=m_data_c.end();it++){
-            m_data_c.erase(it);
-        }
+        m_data_c.clear();
     }
 };
 
@@ -340,7 +320,7 @@ void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
     std::getline(input,line);
 
     while(line[0]=='%'){
-        // if there are comments, go to the next line
+        // we don't want the commented lines
         std::getline(input,line);
     }
 
@@ -358,14 +338,28 @@ void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
         std::size_t i,j;
         T value;
         curr_line >> i >> j >> value;
-        std::array<std::size_t,2> v={i-1,j-1};
+        (*this)(i-1,j-1)=value;
+        std::getline(input,line);
+        cont++;
+    }
+};
+
+template<Scalar T,ORDER StorageOrder>
+void Matrix<T,StorageOrder>::clear(){
+    if(is_compressed()){
+        rows_indexes.clear();
+        cols_indexes.clear();
+        m_data_stat.clear();
+        return;
+    }
+    else{
         if(StorageOrder==ORDER::ROW_ORDER){
-            m_data_r[v]=value;
+            m_data_r.clear();
         }
         if(StorageOrder==ORDER::COL_ORDER){
-            m_data_c[v]=value;
+            m_data_c.clear();
         }
-        std::getline(input,line);
+        return;
     }
 };
 

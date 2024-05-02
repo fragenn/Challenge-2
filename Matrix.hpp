@@ -22,11 +22,11 @@ class Matrix{
         // Flag (TRUE if Matrix is compressed, FALSE if uncompressed)
         bool flag=false;
         // Number of rows
-        unsigned int m_rows;
+        unsigned int m_rows=0;
         // Number of columns
-        unsigned int m_cols;
+        unsigned int m_cols=0;
         // Number of non zero elements
-        unsigned int m_nnz;
+        unsigned int m_nnz=0;
         // Matrix in dynamic storage by ROWS or COLS
         MatrixUncompressedRow m_data_r;
         MatrixUncompressedCol m_data_c;
@@ -44,6 +44,8 @@ class Matrix{
         Matrix(unsigned int rows,unsigned int cols):m_rows(rows),m_cols(cols){
             (*this).mat_resize(rows,cols);
         };
+        // Clear memory
+        void clear();
         // Call operators (both CONST and NON-CONST)
         T operator()(std::size_t i, std::size_t j) const;
         T& operator()(std::size_t i, std::size_t j);
