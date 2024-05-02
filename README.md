@@ -3,7 +3,7 @@
 ## Abstract
 Here I have uploaded my solution for the first Challenge of the Advanced Programming and Scientific Computing (PACS) course in Politecnico di Milano.
 The main purpose of the challenge is to implement a program which compares the different performances of the Matrix-Vector product depending on the choice of matrix ordering (`ROW_ORDER` or `COL_ORDER`) and on the type of storage of the matrix inside the memory (Uncompressed (known as `COOmap`) or Compressed (depending on the order `CSR` or `CSC`).
-In particular, it was asked to create a matrix class which contains the different data structures needed to work on all the cases listed above and the various methods which define the operations of compressing and uncompressing the matrix, a reader method to work with matrices in the *MatrixMarket* format and all the overloaded call operator and product operator.
+In particular, it was asked to create a matrix class which contains the different data structures needed to work on all the cases listed above and the various methods which define the operations of compressing and uncompressing the matrix, a reader method to work with matrices in the *MatrixMarket* format and all the overloaded call operator and product operator (see the file Challenge23-24-2.pdf for more informations).
 
 ## Rules
 In order to run and execute correctly the program, simply clone my repository using and write:
