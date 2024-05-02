@@ -61,8 +61,7 @@ class Matrix{
         // Product Matrix-Vector
         friend std::vector<T> operator*(const Matrix<T,StorageOrder>& A,const std::vector<T>& v){
             // declare the result
-            T def_val;
-            std::vector<T> result(A.m_rows,def_val);
+            std::vector<T> result(A.m_rows);
             // exit if there are problems of sizing
             if(A.m_cols!=v.size()){
                 std::cerr<<"SIZING ERROR"<<std::endl;
