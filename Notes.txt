@@ -1,0 +1,22 @@
+- README is clear, you forgot to write wath paths to change in the Makefile
+
+- friend operators should be defined outside of the class
+
+- avoid to inline definitons of long funcitons inside the class body
+
+- good implementation of the valueType with concepts
+
+- in operations that can't be executed on compressed matrices, you should give a warning
+
+- initialize the default value when returning 0 in the const call operator
+
+- use if constexpr when the checks can be done compile time
+
+- you should not hard-code the matrix dimensions in the test but deduce them from the Matrix class
+
+- I got a compile time error in the definition of the method Matrix::clear() due to the template arguments
+
+- no gain in computational time 
+ 
+- segmentation fault in Matrix::mat_resize() when the new matrix dimension is smaller than the previous
+- add checks for matrix and vector dimension compatibility in the prodcut

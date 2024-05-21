@@ -52,7 +52,7 @@ T& Matrix<T,StorageOrder>::operator()(std::size_t i,std::size_t j){
                 auto it=m_data_r.find(v);
                 if(it==m_data_r.end()){
                     // CREATE THE NEW ELEMENT
-                    T def_val;
+                    T def_val(0);
                     m_data_r[v]=def_val;
                     return it->second;
                 }
@@ -360,7 +360,7 @@ void Matrix<T,StorageOrder>::readMarketFormat(const std::string& name){
     }
 };
 
-template<typename T,ORDER StorageOrder>
+template<ValueType T,ORDER StorageOrder>
 void Matrix<T,StorageOrder>::clear(){
     if(is_compressed()){
         rows_indexes.clear();

@@ -4,7 +4,6 @@
 
 
 int main(int argc,char* argv[]){
-
     // Read and memorize the matrix uncompressed by row
     Matrix<double,ORDER::ROW_ORDER> A_r(1,1);
     A_r.readMarketFormat("lnsp_131.mtx");
